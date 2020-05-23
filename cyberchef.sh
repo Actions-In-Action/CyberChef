@@ -31,7 +31,7 @@ echo "remote CyberChef_${github_latest_tag}.zip is released"
 
 
 echo "checking gitee tag"
-if ! gitee_tag=$(curl --silent -X GET --header 'Content-Type: application/json;charset=UTF-8' "https://gitee.com/api/v5/repos/${SECRETS_GITEE_USERNAME}/CyberChef/tags"); then
+if ! gitee_tag=$(curl --silent -X GET --header 'Content-Type: application/json;charset=UTF-8' "${SECRETS_PROXY_URL}https://gitee.com/api/v5/repos/${SECRETS_GITEE_USERNAME}/CyberChef/tags"); then
     echo "checking gitee tag failed"
 
     exit 1    
@@ -104,7 +104,7 @@ sleep 5
 
 
 echo "requesting gitee access token"
-SECRETS_GITEE_ACCESS_TOKEN=$(curl --silent -X POST --data-urlencode "grant_type=password" --data-urlencode "username=${SECRETS_GITEE_USERNAME}" --data-urlencode "password=${SECRETS_GITEE_PASSWORD}" --data-urlencode "client_id=${SECRETS_GITEE_CLIENT_ID}" --data-urlencode "client_secret=${SECRETS_GITEE_CLIENT_SECRET}" --data-urlencode "scope=projects" https://gitee.com/oauth/token |  grep -oP '(?<="access_token":")[\da-f]+(?=")')
+SECRETS_GITEE_ACCESS_TOKEN=$(curl --silent -X POST --data-urlencode "grant_type=password" --data-urlencode "username=${SECRETS_GITEE_USERNAME}" --data-urlencode "password=${SECRETS_GITEE_PASSWORD}" --data-urlencode "client_id=${SECRETS_GITEE_CLIENT_ID}" --data-urlencode "client_secret=${SECRETS_GITEE_CLIENT_SECRET}" --data-urlencode "scope=projects" "${SECRETS_PROXY_URL}https://gitee.com/oauth/token" |  grep -oP '(?<="access_token":")[\da-f]+(?=")')
 if [ "${SECRETS_GITEE_ACCESS_TOKEN}" = "" ]; then
     echo "request gitee access token failed"
 
@@ -113,7 +113,7 @@ fi
 
 
 echo "rebuilding gitee pages"
-rebuild_result=$(curl --silent -X POST --header 'Content-Type: application/json;charset=UTF-8' "https://gitee.com/api/v5/repos/${SECRETS_GITEE_USERNAME}/CyberChef/pages/builds" -d "{\"access_token\":\"${SECRETS_GITEE_ACCESS_TOKEN}\"}")
+rebuild_result=$(curl --silent -X POST --header 'Content-Type: application/json;charset=UTF-8' "${SECRETS_PROXY_URL}https://gitee.com/api/v5/repos/${SECRETS_GITEE_USERNAME}/CyberChef/pages/builds" -d "{\"access_token\":\"${SECRETS_GITEE_ACCESS_TOKEN}\"}")
 if [ "$(echo "${rebuild_result}"  | grep -oP "(?<=\")queued(?=\")")" != "queued" ]; then
     echo "rebuild gitee pages failed: ${rebuild_result}"
 

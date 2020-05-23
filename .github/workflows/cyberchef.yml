@@ -1,32 +1,27 @@
 name: CyberChef
-on: 
+on:
   schedule:
-    - cron: '*/30 * * * *' # Runs every first and 30th minute
+    - cron: "*/30 * * * *" # Runs every first and 30th minute
 
 jobs:
-
   build:
     name: Sync
     runs-on: ubuntu-latest
     steps:
+      - name: Check out code into the repo directory
+        uses: actions/checkout@v1
+        with:
+          submodules: true
 
-    - name: Check out code into the repo directory
-      uses: actions/checkout@v1
-      with:
-        submodules: true
-
-    - name: CyberChef
-      env:
-        TZ: Asia/Shanghai
-        TERM: xterm-256color # for tput
-      run: |
-        env SECRETS_PUSH_URL=${{ secrets.PUSH_URL}}\
-            SECRETS_GITEE_USERNAME=${{ secrets.GITEE_USERNAME}}\
-            SECRETS_GITEE_CLIENT_ID=${{ secrets.GITEE_CLIENT_ID}}\
-            SECRETS_GITEE_CLIENT_SECRET=${{ secrets.GITEE_CLIENT_SECRET}}\
-            SECRETS_GITEE_PASSWORD=${{ secrets.GITEE_PASSWORD}}\
-            bash cyberchef.sh
-
-
-        
-
+      - name: CyberChef
+        env:
+          TZ: Asia/Shanghai
+          TERM: xterm-256color # for tput
+        run: |
+          env SECRETS_PUSH_URL=${{ secrets.PUSH_URL}}\
+              SECRETS_GITEE_USERNAME=${{ secrets.GITEE_USERNAME}}\
+              SECRETS_GITEE_CLIENT_ID=${{ secrets.GITEE_CLIENT_ID}}\
+              SECRETS_GITEE_CLIENT_SECRET=${{ secrets.GITEE_CLIENT_SECRET}}\
+              SECRETS_GITEE_PASSWORD=${{ secrets.GITEE_PASSWORD}}\
+              SECRETS_PROXY_URL=${{ secrets.PROXY_URL}}\
+              bash cyberchef.sh
