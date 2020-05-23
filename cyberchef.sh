@@ -89,10 +89,11 @@ git config --global http.postbuffer 524288000
 git config user.name "${SECRETS_GITEE_USERNAME}"
 git add .
 git commit -m "${github_latest_tag}"
+git tag -a "${github_latest_tag}" -m "${github_latest_tag}"
 
 
 echo "git push to gitee"
-if ! git push --repo "https://${SECRETS_GITEE_USERNAME}:${SECRETS_GITEE_PASSWORD}@gitee.com/${SECRETS_GITEE_USERNAME}/CyberChef.git"; then
+if ! git push --follow-tags --repo "https://${SECRETS_GITEE_USERNAME}:${SECRETS_GITEE_PASSWORD}@gitee.com/${SECRETS_GITEE_USERNAME}/CyberChef.git"; then
     echo "git push to gitee failed"
 
     exit 1
@@ -121,13 +122,13 @@ if [ "$(echo "${rebuild_result}"  | grep -oP "(?<=\")queued(?=\")")" != "queued"
 fi
 
 
-echo "git push new tag to gitee"
-git tag -a "${github_latest_tag}" -m "${github_latest_tag}"
-if ! git push --repo "https://${SECRETS_GITEE_USERNAME}:${SECRETS_GITEE_PASSWORD}@gitee.com/${SECRETS_GITEE_USERNAME}/CyberChef.git" --tags; then
-    echo "git push new tag to gitee failed"
+# echo "git push new tag to gitee"
+# git tag -a "${github_latest_tag}" -m "${github_latest_tag}"
+# if ! git push --repo "https://${SECRETS_GITEE_USERNAME}:${SECRETS_GITEE_PASSWORD}@gitee.com/${SECRETS_GITEE_USERNAME}/CyberChef.git" --tags; then
+#     echo "git push new tag to gitee failed"
   
-    exit 1
-fi
+#     exit 1
+# fi
 
 
 # notify me
