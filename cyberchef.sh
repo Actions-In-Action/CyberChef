@@ -37,13 +37,17 @@ if ! gitee_tag=$(curl --silent -X GET --header 'Content-Type: application/json;c
     exit 1    
 fi
 
+echo "gitee_tag: ${gitee_tag}"
+
 if ! [[ "${gitee_tag}" =~ '"commit"' ]]; then
     echo "checking gitee tag failed"
 
     exit 1 
 fi  
 
-gitee_tag=$(echo "${gitee_tag}" | grep -oP "(?<=\")${github_latest_tag}(?=\")")
+gitee_tag=$(echo "${gitee_tag}" | grep -oP "(?<=\")${github_latest_tag}(?=\")" | head -1)
+echo "gitee_tag: ${gitee_tag}"
+
 if [ "${gitee_tag}" = "${github_latest_tag}" ]; then
     echo "gitee tag ${gitee_tag} already synced"
 
